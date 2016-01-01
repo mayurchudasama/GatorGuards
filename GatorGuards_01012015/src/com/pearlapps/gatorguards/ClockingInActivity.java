@@ -1,0 +1,196 @@
+package com.pearlapps.gatorguards;
+
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.pearlapps.gatorguards.networkhandler.HttpRequest;
+import com.pearlapps.gatorguards.utils.DbHelperHG;
+import com.pearlapps.gatorguards.utils.PrefHandler;
+
+public class ClockingInActivity extends Activity implements OnClickListener{
+
+	TextView tvTimeDate,tvName,tvLocation,tvCostCodes;
+	String id;
+	DbHelperHG helper;
+	PrefHandler pref;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_clocking_in);
+		pref=new PrefHandler(this);
+		helper=new DbHelperHG(this);
+		tvTimeDate=(TextView)findViewById(R.id.tvTimeDate);
+		tvName=(TextView)findViewById(R.id.tvName);
+		tvLocation=(TextView)findViewById(R.id.tvLocation);
+		tvCostCodes=(TextView)findViewById(R.id.tvCostCodes);
+		
+		Date dtNow=(Date) getIntent().getSerializableExtra("dtNow");
+				
+		SimpleDateFormat df = new SimpleDateFormat("hh:mm EEEE, dd MMM yyyy");
+		String timeDate=df.format(dtNow);
+		tvTimeDate.setText(timeDate);
+		
+		tvName.setText(pref.getUserName());
+		tvLocation.setText(getIntent().getStringExtra("location"));
+		tvCostCodes.setText(getIntent().getStringExtra("costcode"));
+		id=String.valueOf(pref.getUserId());
+		
+		findViewById(R.id.imgDone).setOnClickListener(this);
+		
+		
+		int success=helper.insertAudioRecord(id, tvName.getText().toString(), tvLocation.getText().toString(), tvCostCodes.getText().toString(), tvTimeDate.getText().toString(), "");
+		if(success==1)
+		{
+			System.out.println("LoggedIn Successfully");
+//			Toast.makeText(this, "Clocked In Successfully", Toast.LENGTH_LONG).show();
+			pref.setUserClockedIn(true);
+		}
+		else
+		{
+			Log.e("Error inserting record in database", "Error");
+		}
+		
+		findViewById(R.id.tvSync).setOnClickListener(onClickListener);
+	}
+	OnClickListener onClickListener=new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			AsyncPost post=new AsyncPost();
+			post.execute();
+		}
+	};
+	private final String URL = "https://docs.google.com/forms/d/12vCP6mUN6CnKRKbk3ghVlstUW8RYeYj8ugITXSzIbEo/formResponse";
+	private final String KEY_ID = "entry_1276988803";
+	private final String KEY_NAME = "entry_1833377572";
+	private final String KEY_LOCATION = "entry_1974637109";
+	private final String KEY_COST_CODES = "entry_1711576972";
+	private final String KEY_TIME_IN = "entry_960510735";
+	private final String KEY_TIME_OUR = "entry_1884756332";
+	private class AsyncPost extends AsyncTask<Void, Void, Void> {
+		ProgressDialog pDialog;
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			pDialog = new ProgressDialog(ClockingInActivity.this);
+			pDialog.setCancelable(false);
+			pDialog.setMessage("Syncing...");
+			if (HttpRequest.hasConnection(ClockingInActivity.this)) {
+				pDialog.show();
+			} else {
+				cancel(true);
+			}
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+
+			DbHelperHG helper=new DbHelperHG(ClockingInActivity.this);
+			Cursor cursor=helper.getAllRecords();
+			try
+			{
+				if(cursor.getCount()>0)
+				{
+				
+					do
+					{
+						String id,name,location,cost_code,time_in,time_out;
+						id=cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GID));
+						name=cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GNAME));
+						location=cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GLOCATION));
+						cost_code=cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GCOST_CODES));
+						time_in=cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTIME_IN));
+						time_out=cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTIME_OUT));
+						try {
+								String postBody = KEY_ID + "="+ URLEncoder.encode(id, "UTF-8") + "&" 
+										+ KEY_NAME+ "=" + URLEncoder.encode(name, "UTF-8") + "&"
+										+ KEY_LOCATION + "="+ URLEncoder.encode(location, "UTF-8") + "&"
+										+ KEY_COST_CODES + "="+ URLEncoder.encode(cost_code, "UTF-8") + "&" 
+										+ KEY_TIME_IN+ "=" + URLEncoder.encode(time_in, "UTF-8") + "&"
+										+ KEY_TIME_OUR + "="+ URLEncoder.encode(time_out, "UTF-8");
+								HttpRequest request = new HttpRequest();
+								String result = request.makeServiceCall(URL + "?" + postBody,
+										HttpRequest.POST);
+								System.out.println("Result : " + result);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+					}
+					while(cursor.moveToNext());
+				}
+			}
+			catch(final Exception e)
+			{
+				ClockingInActivity.this.runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+					Toast.makeText(ClockingInActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+					}
+				});
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+
+			if (pDialog.isShowing())
+				pDialog.dismiss();
+		}
+	}
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		
+		Intent intent=new Intent(this,CostCodesActivity.class);
+		intent.putExtra("dtNow", getIntent().getSerializableExtra("dtNow"));
+		intent.putExtra("location", getIntent().getSerializableExtra("location"));
+		startActivity(intent);
+		overridePendingTransition(R.anim.l_to_r_in, R.anim.l_to_r_out);
+	}
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.imgDone:
+			/*int success=helper.insertAudioRecord(id, tvName.getText().toString(), tvLocation.getText().toString(), tvCostCodes.getText().toString(), tvTimeDate.getText().toString(), "");
+			if(success==1)
+			{
+				System.out.println("LoggedIn Successfully");
+				Toast.makeText(this, "Clocked In Successfully", Toast.LENGTH_LONG).show();
+				pref.setUserClockedIn(true);*/
+			Toast.makeText(this, "Clocked In Successfully", Toast.LENGTH_LONG).show();
+			/*}
+			else
+			{
+				Log.e("Error inserting record in database", "Error");
+			}*/
+			break;
+
+		default:
+			break;
+		}
+		
+	}
+}
