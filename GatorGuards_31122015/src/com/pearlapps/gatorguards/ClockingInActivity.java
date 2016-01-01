@@ -1,11 +1,11 @@
 package com.pearlapps.gatorguards;
 
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -155,8 +155,12 @@ public class ClockingInActivity extends Activity implements OnClickListener{
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
-//		super.onBackPressed();
-		this.finish();
+		
+		Intent intent=new Intent(this,CostCodesActivity.class);
+		intent.putExtra("dtNow", getIntent().getSerializableExtra("dtNow"));
+		intent.putExtra("location", getIntent().getSerializableExtra("location"));
+		startActivity(intent);
+		overridePendingTransition(R.anim.l_to_r_in, R.anim.l_to_r_out);
 	}
 	@Override
 	public void onClick(View v) {
