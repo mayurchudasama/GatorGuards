@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_grey4"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rlTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true" >
+
+        <TextView
+            android:id="@+id/TextView02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Clocking In"
+            android:textColor="#403b37"
+            android:textSize="17dp" />
+        
+        
+        <TextView
+            android:id="@+id/tvSync"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:text="Sync"
+            android:textColor="#403b37"
+            android:textSize="17dp" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvLine"
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/rlTitle"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#403b37" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/rlTitle"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/imgDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_go_checkmark" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Clock In Successful!"
+            android:textColor="#403b37"
+            android:textSize="25dp" />
+
+        <TextView
+            android:id="@+id/tvTimeDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tvTimeDate"
+            android:textColor="#403b37"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Fernandez, Vicente"
+            android:textColor="#403b37"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/tvLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Huntington, Library"
+            android:textColor="#403b37"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/tvCostCodes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Electrical"
+            android:textColor="#403b37"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+</RelativeLayout>
