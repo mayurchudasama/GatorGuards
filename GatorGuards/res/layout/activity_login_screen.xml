@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_grey4"
+    tools:context=".LoginScreen" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Login"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"
+            android:textSize="23dp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_margin="15dp"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/edtUserName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="@string/username"
+            android:inputType="textPassword|numberDecimal"
+            android:singleLine="true" >
+        </EditText>
+
+        <EditText
+            android:id="@+id/edtpassword"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:background="@android:drawable/edit_text"
+            android:ems="10"
+            android:hint="@string/password"
+            android:inputType="textPassword|numberDecimal"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/btnsignin"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="@android:color/white"
+            android:text="@string/lbl_sign_in"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</RelativeLayout>

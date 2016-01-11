@@ -21,5 +21,12 @@
     <string name="title_activity_location">LocationActivity</string>
     <string name="title_activity_cost_codes">CostCodesActivity</string>
     <string name="title_activity_clocking_in">ClockingInActivity</string>
+    <string name="username">Enter Username</string>
+    <string name="userid">Enter Userid</string>
+    <string name="location">Enter Location</string>
+    <string name="password">Enter Password</string>
+    <string name="lbl_sign_in">Sign In</string>
+    <string name="add">Add</string>
+    <string name="title_activity_add_user">AddUser</string>
 
 </resources>

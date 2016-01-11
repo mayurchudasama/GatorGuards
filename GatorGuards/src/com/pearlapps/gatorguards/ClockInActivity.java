@@ -18,26 +18,16 @@ import android.widget.Toast;
 
 import com.pearlapps.gatorguards.networkhandler.CompleteTaskListner;
 import com.pearlapps.gatorguards.networkhandler.HttpRequest;
+import com.pearlapps.gatorguards.utils.Cons;
 import com.pearlapps.gatorguards.utils.DbHelperHG;
 import com.pearlapps.gatorguards.utils.PrefHandler;
 
-public class ClockInActivity extends Activity implements OnClickListener,
-		CompleteTaskListner {
+public class ClockInActivity extends Activity implements OnClickListener{
 	// EmployerBean bean;
 	TextView tvTime, tvDate, tvGo, tvStop, tvName, tvRecords, tvSync;
 	Date dtNow;
 	PrefHandler pref;
-	public static final String DFSTRING_DISPLAY=" EEEE, dd MMM yyyy";
-	public static final String DFSTRING="dd/MM/yyyy";
-	public static final String URL = "https://docs.google.com/forms/d/12vCP6mUN6CnKRKbk3ghVlstUW8RYeYj8ugITXSzIbEo/formResponse";
-	public static final String KEY_ID = "entry_1276988803";
-	public static final String KEY_NAME = "entry_1833377572";
-	public static final String KEY_LOCATION = "entry_1974637109";
-	public static final String KEY_COST_CODES = "entry_1711576972";
-	public static final String KEY_TIME_IN = "entry_960510735";
-	public static final String KEY_TIME_OUR = "entry_1884756332";
-	public static final String KEY_TOTAL_TIME = "entry_160537164";
-	public  static final String DFSTRING_HM = "hh:mm";
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +53,11 @@ public class ClockInActivity extends Activity implements OnClickListener,
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
-		SimpleDateFormat dateFormat = new SimpleDateFormat(DFSTRING_HM);
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Cons.DFSTRING_HM);
 		String timeNow = dateFormat.format(dtNow);
 		tvTime.setText(timeNow);
 
-		SimpleDateFormat df = new SimpleDateFormat(DFSTRING_DISPLAY);
+		SimpleDateFormat df = new SimpleDateFormat(Cons.DFSTRING_DISPLAY);
 		String dateNow = df.format(dtNow);
 		tvDate.setText(dateNow);
 		super.onResume();
@@ -105,16 +95,16 @@ public class ClockInActivity extends Activity implements OnClickListener,
 						name = cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GNAME));
 						location = cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GLOCATION));
 						cost_code = cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GCOST_CODES));
-						time_in = changeDateFormat(cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTIME_IN)));
-						time_out = changeDateFormat(cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTIME_OUT)));
+						time_in = Cons.changeDateFormat(cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTIME_IN)));
+						time_out = Cons.changeDateFormat(cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTIME_OUT)));
 						total_time = cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTOTAL_TIME));
 						
 						System.out.println(time_in+" , "+time_out);
 						
 						try {
-							String postBody = getBody(id, name, location,cost_code, time_in, time_out,total_time);
+							String postBody = Cons.getBody(id, name, location,cost_code, time_in, time_out,total_time);
 							HttpRequest request = new HttpRequest();
-							String result = request.makeServiceCall(URL + "?"
+							String result = request.makeServiceCall(Cons.URL + "?"
 									+ postBody, HttpRequest.POST);
 							System.out.println("Result : " + result);
 						} catch (Exception e) {
@@ -147,34 +137,7 @@ public class ClockInActivity extends Activity implements OnClickListener,
 				pDialog.dismiss();
 		}
 	}
-	public static String changeDateFormat(String time_in) {
-		String dt=null;
-		try
-		{
-			SimpleDateFormat dfD = new SimpleDateFormat(DFSTRING_HM+""+DFSTRING_DISPLAY);
-			Date dtF=dfD.parse(time_in);
-			SimpleDateFormat df = new SimpleDateFormat(DFSTRING);
-			dt= df.format(dtF);
-			
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return dt;
-	}
-	public static String getBody(String id, String name, String location,String cost_code, String time_in, String time_out,String total_time) throws UnsupportedEncodingException 
-	{
-		String postBody 
-				= KEY_ID + "="+ URLEncoder.encode(id, "UTF-8") + "&"
-				+ KEY_NAME + "="+ URLEncoder.encode(name, "UTF-8") + "&"
-				+ KEY_LOCATION + "="+ URLEncoder.encode(location, "UTF-8") + "&" 
-				+ KEY_COST_CODES + "="+ URLEncoder.encode(cost_code, "UTF-8") + "&" 
-				+ KEY_TIME_IN + "="+ URLEncoder.encode(time_in, "UTF-8") + "&"
-				+ KEY_TIME_OUR + "="+ URLEncoder.encode(time_out, "UTF-8") + "&"
-				+ KEY_TOTAL_TIME + "="+ URLEncoder.encode(total_time, "UTF-8");
-		return postBody;
-	}
+	
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
@@ -197,7 +160,7 @@ public class ClockInActivity extends Activity implements OnClickListener,
 			PrefHandler pref = new PrefHandler(this);
 			DbHelperHG helper = new DbHelperHG(this);
 			dtNow = new Date();
-			SimpleDateFormat df = new SimpleDateFormat(DFSTRING_HM+DFSTRING_DISPLAY);
+			SimpleDateFormat df = new SimpleDateFormat(Cons.DFSTRING_HM+Cons.DFSTRING_DISPLAY);
 			String dateNow = df.format(dtNow);
 			int lastId = helper.getLastRecordId();
 			String inTime=helper.getLastInTime(""+lastId);
@@ -238,14 +201,5 @@ public class ClockInActivity extends Activity implements OnClickListener,
 			break;
 		}
 
-	}
-
-	@Override
-	public void completeTask(String result, int response_code) {
-		// TODO Auto-generated method stub
-		if (result != null && response_code == 1) {
-			System.out.println("Respone : " + result);
-
-		}
 	}
 }

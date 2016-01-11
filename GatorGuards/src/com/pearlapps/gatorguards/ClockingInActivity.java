@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pearlapps.gatorguards.networkhandler.HttpRequest;
+import com.pearlapps.gatorguards.utils.Cons;
 import com.pearlapps.gatorguards.utils.DbHelperHG;
 import com.pearlapps.gatorguards.utils.PrefHandler;
 
@@ -38,7 +39,7 @@ public class ClockingInActivity extends Activity implements OnClickListener{
 		
 		Date dtNow=(Date) getIntent().getSerializableExtra("dtNow");
 				
-		SimpleDateFormat df = new SimpleDateFormat(ClockInActivity.DFSTRING_HM+ClockInActivity.DFSTRING_DISPLAY);
+		SimpleDateFormat df = new SimpleDateFormat(Cons.DFSTRING_HM+Cons.DFSTRING_DISPLAY);
 		String timeDate=df.format(dtNow);
 		tvTimeDate.setText(timeDate);
 		
@@ -108,13 +109,13 @@ public class ClockingInActivity extends Activity implements OnClickListener{
 						name=cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GNAME));
 						location=cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GLOCATION));
 						cost_code=cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GCOST_CODES));
-						time_in = ClockInActivity.changeDateFormat(cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTIME_IN)));
-						time_out =ClockInActivity.changeDateFormat(cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTIME_OUT)));
+						time_in = Cons.changeDateFormat(cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTIME_IN)));
+						time_out =Cons.changeDateFormat(cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTIME_OUT)));
 						total_time=cursor.getString(cursor.getColumnIndex(DbHelperHG.KEY_GTOTAL_TIME));
 						try {
-								String postBody = ClockInActivity.getBody(id, name, location,cost_code, time_in, time_out,total_time);
+								String postBody = Cons.getBody(id, name, location,cost_code, time_in, time_out,total_time);
 								HttpRequest request = new HttpRequest();
-								String result = request.makeServiceCall(ClockInActivity.URL + "?" + postBody,
+								String result = request.makeServiceCall(Cons.URL + "?" + postBody,
 										HttpRequest.POST);
 								System.out.println("Result : " + result);
 							} catch (Exception e) {
